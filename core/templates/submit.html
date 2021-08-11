@@ -1,0 +1,169 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Notice Board {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" 
+         style="min-height: 100px; background-image: url(/static/assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
+      <!-- Mask -->
+      <span class="mask bg-gradient-default opacity-8"></span>
+      <!-- Header container -->
+    </div>
+
+    <div class="container-fluid mt--7">
+
+      <div class="row">
+        <div class="col-xl-12 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">롯데출판어쩌구</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="#!" class="btn btn-sm btn-primary">제출하기</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form>
+                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username">신청부문</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" 
+                               value="{{ request.user.username }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">ISBN</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" 
+                               placeholder="{{ request.user.email }}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-last-name">도서명</label>
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username">저자명</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" 
+                               value="{{ request.user.username }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">출판사명(대표명)</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" 
+                               placeholder="{{ request.user.email }}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-4" />
+                <!-- Address -->
+                <h6 class="heading-small text-muted mb-4">Contact information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username" >초판 1쇄 발행일</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="YYYYMMDD" >
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">정가(원)</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" 
+                               placeholder="{{ request.user.email }}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-city">가로(mm)</label>
+                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York"> 
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">세로(mm)</label>
+                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">쪽수(page)</label>
+                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username" >사업자등록증</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="YYYYMMDD" >
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">출판사신고필증</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" 
+                               placeholder="{{ request.user.email }}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-4" />
+                <!-- Description -->
+                <h6 class="heading-small text-muted mb-4"></h6>
+                <div class="pl-lg-4">
+                  <div class="form-group">
+                    <label>도서 특징</label>
+                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                  </div>
+                </div>
+                <div class="pl-lg-4">
+                  <div class="form-group">
+                    <label>저자 소개</label>
+                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                  </div>
+                </div>
+                <div class="pl-lg-4">
+                  <div clas="form-group">
+                    <label>출판사 및 대표소개</label>
+                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                  </div>
+                  <div clas="form-group">
+                    <div class="pl-lg-4"></div>
+                      <a href="#!" class="btn btn-sm btn-primary">제출하기</a>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
