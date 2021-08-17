@@ -7,6 +7,7 @@
     <!-- Header -->
 
     <div class="container-fluid mt--7">
+      
 
       <div class="row">
         <div class="col-xl-12 order-xl-1">
@@ -17,49 +18,49 @@
                   <h3 class="mb-0">회원가입</h3>
                 </div>
                 <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                  <a href="javascript:document.applicant.submit();" class="btn btn-sm btn-primary">가입</a>
                 </div>
               </div>
             </div>
             <div class="card-body">
-              <form>
+                <form name="applicant" method="post" action="create" >{% csrf_token %}
                 <h6 class="heading-small text-muted mb-4">User information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-username">ID</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" value="">
+                      <div class="form-group" >
+                          <label class="form-control-label" for="id_uid" >ID {{no_uid}}</label>
+                        <input type="text" id="uid" name="uid" value="{{old_uid}}" class="form-control form-control-alternative" >
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username">비밀번호</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" value="">
+                          <label class="form-control-label" for="input-username">비밀번호 {{not_eq}}</label>
+                        <input type="text" name="password" class="form-control form-control-alternative" value="">
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">비밀번호 확인</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" value="">
+                        <input type="text" name="password_check" class="form-control form-control-alternative" value="">
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">연락처</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative" >
+                          <label class="form-control-label" for="input-first-name">연락처 {{no_contact}}</label>
+                          <input type="text" name="contact" value="{{old_contact}}" class="form-control form-control-alternative" >
                       </div>
                     </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-username">이메일</label>
-                      <input type="text" id="input-username" class="form-control form-control-alternative" value="">
+                        <label class="form-control-label" for="input-username">이메일 {{no_email}} </label>
+                        <input type="text" name="email" class="form-control form-control-alternative" value="{{old_email}}">
                     </div>
                   </div>
                 </div>
@@ -67,7 +68,10 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label class="form-control-label" for="input-username">지원자 구분</label>
-                      <input type="text" id="input-username" class="form-control form-control-alternative" value="">
+                      <div class="col-lg-6">
+                          <input type="radio" name="applicant_biz" checked="">일반   
+                          <input type="radio" name="applicant_inv">개인  
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -75,7 +79,10 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label class="form-control-label" for="input-username">공모 참여 동의 여부</label>
-                      <input type="text" id="input-username" class="form-control form-control-alternative" value="" >
+                      <div class="col-lg-6 row-lg-6">
+                          <input type="radio" name="agree_yn" checked="y">동의  
+                          <input type="radio" name="agree_yn">미동의  
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+
 import os
 from decouple import config
 from unipath import Path
@@ -121,5 +122,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'core/static'),
 )
+
+AUTH_USER_MODEL = 'app.Applicant'
 #############################################################
 #############################################################
