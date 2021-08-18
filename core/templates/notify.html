@@ -1,0 +1,100 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} 회원가입 {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+
+    <div class="container-fluid mt--7">
+      
+
+      <div class="row">
+        <div class="col-xl-12 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">회원가입</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="javascript:document.applicant.submit();" class="btn btn-sm btn-primary">가입</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+                <form id="notify" name="notification_form" method="post" action="postn" >{% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-12 row-lg-4" >
+                      <div class="form-group" >
+                          <label class="form-control-label" for="id_uid" >공지 제목 {{no_uid}}</label>
+                        <input type="text" id="title" name="title" value="{{old_uid}}" class="form-control form-control-alternative" >
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="height: 340px" id="editor"> </div>
+                  </div>
+                </div>
+              </form>
+                  <a href="javascript:submit_func();" class="btn btn-sm btn-primary">작성</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+
+    </div>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script>
+    var quill = new Quill('#editor', {
+        modules: {
+        toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['code-block']
+            ]
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'
+    });
+
+    function post(path, params, method='post') {
+
+                  // The rest of this code assumes you are not using a library.
+                  // It can be made less verbose if you use one.
+                  const form = document.createElement('form');
+                  form.method = method;
+                  form.action = path;
+
+                  for (const key in params) {
+                          if (params.hasOwnProperty(key)) {
+                                    const hiddenField = document.createElement('input');
+                                    hiddenField.type = 'hidden';
+                                    hiddenField.name = key;
+                                    hiddenField.value = params[key];
+                                    form.appendChild(hiddenField);
+                                  }
+                        }
+
+                  document.body.appendChild(form);
+                  form.submit();
+    }
+
+
+    function submit_func() {
+        var html = quill.root.innerHTML;
+        var title = document.getElementById("title");
+        $("#title").append("<textarea name='content' style='display:none'>"+html+"</textarea>");
+        $("#notify").submit();
+    }
+
+    </script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

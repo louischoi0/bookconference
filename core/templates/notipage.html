@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} 회원가입 {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="container-fluid mt--7">
+
+      <div class="row">
+        <div class="col-xl-12 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">회원가입</h3>
+                </div>
+                <div class="col-4 text-right">
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group" >
+                        <label class="form-control-label" for="id_uid" >{{no_uid}}</label>
+                        <input type="text" id="uid" name="uid" value="{{noti.title}}" class="form-control form-control-alternative" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                        {{ noti.content |safe }}
+                    </div>
+                  </div>
+                </div>
+              <a href="/postl" class="btn">목록으로</a>
+          </div>
+      </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 

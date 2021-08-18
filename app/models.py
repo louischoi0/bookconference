@@ -9,7 +9,11 @@ from django.contrib.auth.models import User
 from django.db.models import CharField as C
 from django.db.models import DateField as D
 from django.db.models import IntegerField as I
+from django.db.models import AutoField as A
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
+from django.contrib.auth.models import PermissionsMixin
+
+from ckeditor.fields import RichTextField
 
 class ApplicantManager(BaseUserManager):
     
@@ -18,6 +22,7 @@ class ApplicantManager(BaseUserManager):
             uid=uid,
             password=password
         )
+        user.is_admin = True
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -32,8 +37,9 @@ class ApplicantManager(BaseUserManager):
         return user
 
 
-# Create your models here.
-class Applicant(AbstractBaseUser) :
+class Applicant(AbstractBaseUser,PermissionsMixin) :
+    uuid = A(primary_key=True)
+
     email = models.CharField(max_length=200,unique=True)
     uid = models.CharField(max_length=200,unique=True)
     name = models.CharField(max_length=200)
@@ -57,17 +63,13 @@ class Applicant(AbstractBaseUser) :
     USERNAME_FIELD = 'uid'
     objects = ApplicantManager()
 
-    def get_by_natural_key(self, uid):
-        return self.get(uid=uid)
-
-    def has_module_perms(self, app_label):
-            return True
-
     @property
     def is_staff(self):
             return self.is_admin
 
 class Application(models.Model):
+    aid = A(primary_key=True)
+
     applicant_type = C(max_length=200)
     
     isbn = C(max_length=100)
@@ -95,5 +97,15 @@ class Application(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Notification(models.Model) :
+    nid = A(primary_key=True)
+    title = C(max_length=300)
+    content = C(max_length=2000)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Post(models.Model):
+    content = RichTextField()
 
 
