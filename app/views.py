@@ -44,7 +44,10 @@ def ulogin(request) :
 def applications(request) :
     context = {}
     
-    apps = Application.objects.filter(app_user=request.user)
+    if request.user == ADMIN_USER:
+        apps = Application.objects.all().order_by("-aid")
+    else:
+        apps = Application.objects.filter(app_user=request.user)
     context["apps"] = apps
 
     html_template = loader.get_template('applications.html')
@@ -121,12 +124,14 @@ def join(request) :
     del form_data["password_check"]
     print(form_data)
     try :
-        Applicant(**form_data).save()
+        user = Applicant(**form_data)
+        user.save()
     except IntegrityError:
         context["no_uid"] = "(이미 존재하는 아이디입니다.)"
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context,request))
 
+    login(request, user)
     html_template = loader.get_template( 'notifications.html' )
     return HttpResponse(html_template.render(context,request))
 
@@ -181,7 +186,6 @@ def post_submit(request) :
     app = Application(app_user=request.user,**kw)
     app.save()
 
-    html_template = loader.get_template( 'submit.html' )
-    return HttpResponse(html_template.render(context,request))
+    return redirect(reverse('app_list'))
 
 
