@@ -127,7 +127,7 @@ def join(request) :
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context,request))
 
-    html_template = loader.get_template( 'submit.html' )
+    html_template = loader.get_template( 'notifications.html' )
     return HttpResponse(html_template.render(context,request))
 
 @login_required(login_url="/login/")
