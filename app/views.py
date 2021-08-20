@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate, login
 
 from app.forms import ApplicantForm, NotificationForm, ApplicationForm
 from app.models import Applicant, Application, Application
-from app.models import Post,Notification
+from app.models import Notification
 
 ADMIN_USER = "admin" #kpc5616
 
