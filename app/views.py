@@ -11,12 +11,21 @@ from django.http import HttpResponse
 from django import template
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.db.utils import IntegrityError
 
 from django.contrib.auth import authenticate, login
 
-from app.forms import ApplicantForm, NotificationForm
-from app.models import Applicant
+from app.forms import ApplicantForm, NotificationForm, ApplicationForm
+from app.models import Applicant, Application, Application
 from app.models import Post,Notification
+
+ADMIN_USER = "admin" #kpc5616
+
+def app_detail(request,aid) :
+    app = Application.objects.get(aid=aid)
+    context = { 'app' : app }    
+    html_template = loader.get_template('appdetail.html')
+    return HttpResponse(html_template.render(context, request))
 
 def ulogin(request) :
     print(request.POST)
@@ -24,12 +33,22 @@ def ulogin(request) :
     password = request.POST['password']
 
     try :
-        user = Applicant.objects.get(uid=username,password=password) 
+        user = Applicant.objects.get(uid=username,password=password)
         login(request, user)
         return redirect(reverse('list_noti'))
     except Applicant.DoesNotExist :
         messages.error(request,"로그인 정보가 올바르지 않습니다.")
         return redirect('/login/')
+
+@login_required(login_url="/login/")
+def applications(request) :
+    context = {}
+    
+    apps = Application.objects.filter(app_user=request.user)
+    context["apps"] = apps
+
+    html_template = loader.get_template('applications.html')
+    return HttpResponse(html_template.render(context, request))
 
 def joinpage(request) :
     html_template = loader.get_template( 'join.html' )
@@ -44,7 +63,7 @@ def page_noti(request,postnum):
 
 @login_required(login_url="/login/")
 def list_noti(request) :
-    notis = Notification.objects.all()
+    notis = Notification.objects.all().order_by("-created_at")
     context = {
             "notis" : notis
     }
@@ -101,8 +120,15 @@ def join(request) :
     
     del form_data["password_check"]
     print(form_data)
-    Applicant(**form_data).save()
-    return HttpResponse("ok")
+    try :
+        Applicant(**form_data).save()
+    except IntegrityError:
+        context["no_uid"] = "(이미 존재하는 아이디입니다.)"
+        html_template = loader.get_template( 'join.html' )
+        return HttpResponse(html_template.render(context,request))
+
+    html_template = loader.get_template( 'submit.html' )
+    return HttpResponse(html_template.render(context,request))
 
 @login_required(login_url="/login/")
 def index(request):
@@ -111,6 +137,12 @@ def index(request):
     context['segment'] = 'index'
 
     html_template = loader.get_template( 'index.html' )
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def app_submit(request) :
+    context = {}
+    html_template = loader.get_template( 'submit.html' )
     return HttpResponse(html_template.render(context, request))
 
 def pages(request):
@@ -133,3 +165,23 @@ def pages(request):
     except:
         html_template = loader.get_template( 'page-500.html' )
         return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def post_submit(request) :
+    app_form = ApplicationForm(request.POST) 
+    app_form.is_valid()    
+    context = {}
+    
+    app_data = app_form.cleaned_data
+
+    columns = [ "app_type","isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+
+    kw = { x : request.POST[x] for x in columns } 
+
+    app = Application(app_user=request.user,**kw)
+    app.save()
+
+    html_template = loader.get_template( 'submit.html' )
+    return HttpResponse(html_template.render(context,request))
+
+

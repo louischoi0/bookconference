@@ -23,35 +23,33 @@
                   <h3 class="mb-0">롯데출판어쩌구</h3>
                 </div>
                 <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">제출하기</a>
+                  <a href="javascript:document.application.submit();" class="btn btn-sm btn-primary">제출하기</a>
                 </div>
               </div>
             </div>
             <div class="card-body">
-              <form>
+              <form name="application" method="post" action="apply" >{% csrf_token %}
                 <h6 class="heading-small text-muted mb-4">User information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">신청부문</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" 
-                               value="{{ request.user.username }}">
+                          <input type="radio" name="app_type" checked="" value="gen">일반   
+                          <input type="radio" name="app_type" value="trans" >개인  
                       </div>
                     </div>
                     <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-email">ISBN</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" 
-                               placeholder="{{ request.user.email }}">
-                      </div>
+                        <label name="isbn" class="form-control-label" for="input-email">ISBN</label>
+                        <input name="isbn" class="form-control form-control-alternative" 
+                               placeholder="ISBN">
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-last-name">도서명</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative" >
+                        <input type="text" name="book_title" class="form-control form-control-alternative" >
                       </div>
                     </div>
                   </div>
@@ -59,15 +57,14 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">저자명</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" 
+                        <input type="text" name="author_name" class="form-control form-control-alternative" placeholder="Username" 
                                value="{{ request.user.username }}">
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">출판사명(대표명)</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" 
-                               placeholder="{{ request.user.email }}">
+                        <label name = "publisher_name" class="form-control-label" for="input-email">출판사명(대표명)</label>
+                        <input type="email" name="publisher_name" class="form-control form-control-alternative" >
                       </div>
                     </div>
                   </div>
@@ -77,52 +74,56 @@
                 <h6 class="heading-small text-muted mb-4">Contact information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username" >초판 1쇄 발행일</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="YYYYMMDD" >
+                        <label class="form-control-label" name="published_date" for="input-username" >초판 1쇄 발행일</label>
+                        <input  name="published_date" class="form-control form-control-alternative" placeholder="YYYYMMDD" >
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">정가(원)</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" 
-                               placeholder="{{ request.user.email }}">
+                        <label class="form-control-label" name="price" for="price">판매부수(권)</label>
+                        <input  name="book_sales_cnt" class="form-control form-control-alternative" placeholder="판매부수">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" name="price" for="price">정가(원)</label>
+                        <input name="price" class="form-control form-control-alternative" placeholder="판매가격">
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-city">가로(mm)</label>
-                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York"> 
+                        <label class="form-control-label" name="book_width" for="input-city">가로(mm)</label>
+                        <input name="book_width" id="input-city" class="form-control form-control-alternative" placeholder="가로(mm)" >
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-country">세로(mm)</label>
-                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
+                        <label class="form-control-label" name="book_height" for="input-country">세로(mm)</label>
+                        <input name="book_height" id="input-country" class="form-control form-control-alternative" placeholder="세로(mm)" >
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-country">쪽수(page)</label>
-                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
+                        <label class="form-control-label" name="page_num" for="input-country">쪽수(page)</label>
+                        <input name="book_page_cnt" id="input-postal-code" class="form-control form-control-alternative" placeholder="쪽수(page)">
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username" >사업자등록증</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="YYYYMMDD" >
+                        <label class="form-control-label" name="biz_no" for="input-username" >사업자등록증</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="" >
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">출판사신고필증</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" 
-                               placeholder="{{ request.user.email }}">
+                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="">
                       </div>
                     </div>
                   </div>
@@ -133,23 +134,23 @@
                 <div class="pl-lg-4">
                   <div class="form-group">
                     <label>도서 특징</label>
-                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                    <textarea name="book_detail" rows="4" class="form-control form-control-alternative" ></textarea>
                   </div>
                 </div>
                 <div class="pl-lg-4">
                   <div class="form-group">
                     <label>저자 소개</label>
-                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                    <textarea name="author_detail" rows="4" class="form-control form-control-alternative" ></textarea>
                   </div>
                 </div>
                 <div class="pl-lg-4">
                   <div clas="form-group">
                     <label>출판사 및 대표소개</label>
-                    <textarea rows="4" class="form-control form-control-alternative" ></textarea>
+                    <textarea name="publisher_detail" rows="4" class="form-control form-control-alternative" ></textarea>
                   </div>
                   <div clas="form-group">
                     <div class="pl-lg-4"></div>
-                      <a href="#!" class="btn btn-sm btn-primary">제출하기</a>
+                      <a href="javascript:document:application.apply();" class="btn btn-sm btn-primary">제출하기</a>
                     </div>
                   </div>
                 </div>

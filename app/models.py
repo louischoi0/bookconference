@@ -13,8 +13,6 @@ from django.db.models import AutoField as A
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 from django.contrib.auth.models import PermissionsMixin
 
-from ckeditor.fields import RichTextField
-
 class ApplicantManager(BaseUserManager):
     
     def create_user(self,uid,password):
@@ -69,8 +67,9 @@ class Applicant(AbstractBaseUser,PermissionsMixin) :
 
 class Application(models.Model):
     aid = A(primary_key=True)
-
-    applicant_type = C(max_length=200)
+    
+    app_user = C(max_length=200)
+    app_type = C(max_length=200)
     
     isbn = C(max_length=100)
     book_title = C(max_length=200)
@@ -78,7 +77,7 @@ class Application(models.Model):
     author_name = C(max_length=200)
     publisher_name = C(max_length=200)
     
-    published_1st_date = C(max_length=200)
+    published_date = C(max_length=200)
     price = I() 
     
     book_width = I()
@@ -87,9 +86,9 @@ class Application(models.Model):
 
     book_sales_cnt = I()
 
-    book_feature = C(max_length=1000) 
-    author_intro = C(max_length=1000)
-    publisher_intro = C(max_length=1000)
+    book_detail = C(max_length=1000) 
+    author_detail = C(max_length=1000)
+    publisher_detail = C(max_length=1000)
     
     biz_no = C(max_length=300)
     biz_document = C(max_length=300)

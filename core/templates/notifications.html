@@ -34,7 +34,7 @@
                 </thead>
                 <tbody>
                   {% for noti in notis %}
-                  <tr>
+                  <tr onClick="location.href='/postp/{{noti.nid}}/'">
                     <th scope="row">
                       <div class="media align-items-center">
                         <a href="#" class="avatar rounded-circle mr-3">
