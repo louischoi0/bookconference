@@ -43,8 +43,8 @@ def ulogin(request) :
 @login_required(login_url="/login/")
 def applications(request) :
     context = {}
-    
-    if request.user == ADMIN_USER:
+
+    if request.user.uid == ADMIN_USER:
         apps = Application.objects.all().order_by("-aid")
     else:
         apps = Application.objects.filter(app_user=request.user)
