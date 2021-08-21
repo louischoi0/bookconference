@@ -67,6 +67,7 @@ class Applicant(AbstractBaseUser,PermissionsMixin) :
 
 class Application(models.Model):
     aid = A(primary_key=True)
+    app_token = C(max_length=50,default="")
     
     app_user = C(max_length=200)
     app_type = C(max_length=200)

@@ -20,6 +20,8 @@ urlpatterns = [
     path('applications', views.applications, name="app_list"), #내공모
 
     path('apply', views.post_submit, name="post_submit"),
+    path('update/<int:aid>/',views.update_application, name="app_update"),
+
     path('appdetail/<int:aid>/',views.app_detail, name="app_detail"),
 
     # Matches any html file

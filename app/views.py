@@ -23,7 +23,10 @@ ADMIN_USER = "admin" #kpc5616
 
 def app_detail(request,aid) :
     app = Application.objects.get(aid=aid)
-    context = { 'app' : app }    
+    biz_img = f'images/a{aid}/img_0.jpg'
+    pub_img = f'images/a{aid}/img_1.jpg'
+
+    context = { 'app' : app, "biz_img" : biz_img, "pub_img" : pub_img }    
     html_template = loader.get_template('appdetail.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -47,7 +50,7 @@ def applications(request) :
     if request.user.uid == ADMIN_USER:
         apps = Application.objects.all().order_by("-aid")
     else:
-        apps = Application.objects.filter(app_user=request.user)
+        apps = Application.objects.filter(app_user=request.user).order_by("-aid")
     context["apps"] = apps
 
     html_template = loader.get_template('applications.html')
@@ -171,6 +174,26 @@ def pages(request):
         html_template = loader.get_template( 'page-500.html' )
         return HttpResponse(html_template.render(context, request))
 
+def handle_uploaded_file(f,aid,index):
+    import os 
+
+    try :
+        os.mkdir(f"core/static/images/a{aid}")
+    except :
+        pass
+
+    file_name = f"a{aid}/img_{index}.jpg"
+
+    des = os.path.join("core/static/images/",file_name)
+    destination = open(des, 'wb+')
+
+    for chunk in f.chunks(): 
+        destination.write(chunk)
+
+    destination.close()
+    return file_name
+
+
 @login_required(login_url="/login/")
 def post_submit(request) :
     app_form = ApplicationForm(request.POST) 
@@ -186,6 +209,31 @@ def post_submit(request) :
     app = Application(app_user=request.user,**kw)
     app.save()
 
+    if 'biz_file'  in request.FILES:
+        handle_uploaded_file(request.FILES['biz_file'],app.aid,0)
+
+    if 'pub_file'  in request.FILES:
+        handle_uploaded_file(request.FILES['pub_file'],app.aid,1)
+
     return redirect(reverse('app_list'))
 
+@login_required(login_url="/login/")
+def update_application(request,aid) :
+    app_form = ApplicationForm(request.POST) 
+    app_form.is_valid()    
+    context = {}
+    
+    app_data = app_form.cleaned_data
+
+    columns = [ "app_type","isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+
+    kw = { x : request.POST[x] for x in columns } 
+    app = Application.objects.get(aid=aid)
+
+    for k in kw :
+        v = kw[k]
+        setattr(app,k,v)
+
+    app.save()
+    return redirect(reverse(f'app_list'))
 
