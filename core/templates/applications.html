@@ -20,14 +20,14 @@
               <h3 class="mb-0">내공모</h3>
             </div>
             <div class="table-responsive">
-              <a href="/notify.html" class="btn btn-smbtn-primary" >공모참여</a>
+              <a href="/submit" class="btn btn-smbtn-primary" >공모참여</a>
               <table class="table align-items-center table-flush">
                 <thead class="thead-light">
                     <tr >
                     <th scope="col">제목</th>
                     <th scope="col">작성자</th>
                     <th scope="col"></th>
-                    <th scope="col">작가명</th>
+                    <th scope="col">접수번호</th>
                     <th scope="col">등록일시</th>
                     <th scope="col"></th>
                   </tr>
@@ -55,7 +55,7 @@
                     <td>
                       <div class="d-flex align-items-center">
                         <div>
-                            {{ app.author_name }}
+                            {{ app.app_token }}
                         </div>
                       </div>
                     </td>

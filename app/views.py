@@ -12,12 +12,15 @@ from django import template
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.db.utils import IntegrityError
+from django.db.models import Max
 
 from django.contrib.auth import authenticate, login
 
 from app.forms import ApplicantForm, NotificationForm, ApplicationForm
 from app.models import Applicant, Application, Application
 from app.models import Notification
+
+from django.db.models import Count
 
 ADMIN_USER = "admin" #kpc5616
 
@@ -206,7 +209,12 @@ def post_submit(request) :
 
     kw = { x : request.POST[x] for x in columns } 
 
-    app = Application(app_user=request.user,**kw)
+    tnum = Application.objects.filter(app_type=kw['app_type']).aggregate(Count('aid'))
+    c = tnum['aid__count'] + 1
+    t = "일반" if kw['app_type'] == 'g' else '번역'
+    token = f"{t}-{c}"
+
+    app = Application(app_user=request.user,**kw,app_token=token)
     app.save()
 
     if 'biz_file'  in request.FILES:
