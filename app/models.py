@@ -69,32 +69,32 @@ class Application(models.Model):
     aid = A(primary_key=True)
     app_token = C(max_length=50,default="")
     
-    app_user = C(max_length=200)
-    app_type = C(max_length=200)
+    app_user = C(max_length=200,default="")
+    app_type = C(max_length=200,default="")
     
-    isbn = C(max_length=100)
-    book_title = C(max_length=200)
+    isbn = C(max_length=100,default="")
+    book_title = C(max_length=200,default="")
     
-    author_name = C(max_length=200)
-    publisher_name = C(max_length=200)
+    author_name = C(max_length=200,default="")
+    publisher_name = C(max_length=200,default="")
 
     accepted_yn = C(max_length=100,default="N")
     
-    published_date = C(max_length=200)
-    price = I() 
+    published_date = C(max_length=200,default="")
+    price = I(default=0) 
     
-    book_width = I()
-    book_height = I()
-    book_page_cnt = I()
+    book_width = I(default=0)
+    book_height = I(default=0)
+    book_page_cnt = I(default=0)
 
-    book_sales_cnt = I()
+    book_sales_cnt = I(default=0)
 
-    book_detail = C(max_length=1000) 
-    author_detail = C(max_length=1000)
-    publisher_detail = C(max_length=1000)
+    book_detail = C(max_length=1000,default="")
+    author_detail = C(max_length=1000,default="")
+    publisher_detail = C(max_length=1000,default="")
     
-    biz_no = C(max_length=300)
-    biz_document = C(max_length=300)
+    biz_no = C(max_length=300,default="")
+    biz_document = C(max_length=300,default="")
      
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

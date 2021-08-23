@@ -28,7 +28,7 @@
                     <th scope="col">작성자</th>
                     <th scope="col"></th>
                     <th scope="col">등록일시</th>
-                    <th scope="col">Completion</th>
+                    <th scope="col"></th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -52,11 +52,15 @@
                       <span class="badge badge-dot mr-4">
                       </span>
                     </td>
-                    <td>{{noti.created_at}} </td>
+                    <td>{{noti.created_at}}</td>
                     <td>
                       <div class="d-flex align-items-center">
                         <div>
+                          {% if is_admin %}
+                            <a href="/noti_delete/{{noti.nid}}/" class="btn btn-sm btn-primary">삭제</a>
+                          {% else %}
                             here
+                          {% endif %}
                         </div>
                       </div>
                     </td>

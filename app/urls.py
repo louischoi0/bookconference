@@ -25,6 +25,8 @@ urlpatterns = [
     path('appdetail/<int:aid>/',views.app_detail, name="app_detail"),
     path('confirm/<int:aid>/',views.confirm, name="confirm"),
 
+    path('noti_delete/<int:nid>/', views.delete_noti, name="delte_noti"),
+
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
 ] 

@@ -81,7 +81,8 @@ def page_noti(request,postnum):
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
     context = {
-            "notis" : notis
+            "notis" : notis,
+            "is_admin" : request.user.uid == 'admin',
     }
 
     html_template = loader.get_template( 'notifications.html' )
@@ -212,9 +213,31 @@ def post_submit(request) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "app_type","isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+    columns = [ "app_type",
+    "isbn",
+    "book_title",
+    "author_name",
+    "publisher_name",
+    "published_date", 
+    "price", 
+    "book_width",
+    "book_height",
+    "book_page_cnt",
+    "book_sales_cnt",
+    "book_detail",
+    "author_detail",
+    "publisher_detail" ] 
 
-    kw = { x : request.POST[x] for x in columns } 
+    print(request.POST)
+
+    for c in columns :
+
+        if request.POST[c] == "" :
+            context = { "noti_msg" : f"{c} 필드를 입력해 주세요." }
+            html_template = loader.get_template('submit.html')
+            return HttpResponse(html_template.render(context, request))
+
+    kw = { x : request.POST[x] if request.POST[x] else "0" for x in columns } 
 
     tnum = Application.objects.filter(app_type=kw['app_type']).aggregate(Count('aid'))
     c = tnum['aid__count'] + 1
@@ -229,6 +252,12 @@ def post_submit(request) :
 
     if 'pub_file'  in request.FILES:
         handle_uploaded_file(request.FILES['pub_file'],app.aid,1)
+    
+    if 'thumb_file' in request.FILES:
+        handle_uploaded_file(request.FILES['thumb_file'],app.aid,2)
+
+    if 'detail_file' in request.FILES:
+        handle_uploaded_file(request.FILES['detail_file'],app.aid,3)
 
     return redirect(reverse('app_list'))
 
@@ -240,7 +269,7 @@ def update_application(request,aid) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "app_type","isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+    columns = [ "isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
 
     kw = { x : request.POST[x] for x in columns } 
     app = Application.objects.get(aid=aid)
@@ -250,6 +279,19 @@ def update_application(request,aid) :
         setattr(app,k,v)
 
     app.save()
+    print(request.FILES)
+    if 'biz_file'  in request.FILES:
+        handle_uploaded_file(request.FILES['biz_file'],app.aid,0)
+
+    if 'pub_file'  in request.FILES:
+        handle_uploaded_file(request.FILES['pub_file'],app.aid,1)
+    
+    if 'thumb_file' in request.FILES:
+        handle_uploaded_file(request.FILES['thumb_file'],app.aid,2)
+
+    if 'detail_file' in request.FILES:
+        handle_uploaded_file(request.FILES['detail_file'],app.aid,3)
+
     return redirect(reverse(f'app_list'))
 
 @login_required(login_url="/login/")
@@ -262,5 +304,10 @@ def confirm(request,aid) :
     return redirect(reverse('app_list'))
 
 
+@login_required(login_url="/login/")
+def delete_noti(request,nid) :
 
+    noti = Notification.objects.get(nid=nid)
+    noti.delete()
 
+    return redirect(reverse('list_noti'))

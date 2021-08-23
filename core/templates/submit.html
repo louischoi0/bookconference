@@ -29,7 +29,7 @@
             </div>
             <div class="card-body">
               <form name="application" enctype="multipart/form-data"  method="post" action="apply" >{% csrf_token %}
-                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <h6 class="heading-small text-muted mb-4">{{ noti_msg }}</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
@@ -148,14 +148,13 @@
                   </div>
                 </div>
                     <div class="pl-lg-4">
+                        <label class="form-control-label" name="thumb_file" for="thumb_file" >도서 소개 내용 및 이미지를 추가로 첨부할 수 있습니다.</label>
                       <div class="form-group">
-                        <label class="form-control-label" name="thumb_file" for="thumb_file" >표지이미지</label>
                         <input type="file" name="thumb_file" accept="image/*">
                     </div>
                     </div>
                     <div class="pl-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" name="biz_no" for="input-username" >상세이미지</label>
                         <input type="file" name="detail_file" accept="image/*">
                       </div>
                     </div>

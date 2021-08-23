@@ -32,15 +32,21 @@
               </div>
             </div>
             <div class="card-body">
-                <form name="application" method="post" action="/update/{{app.aid}}/" >{% csrf_token %}
+                <form name="application" enctype="multipart/form-data" method="post" action="/update/{{app.aid}}/" >{% csrf_token %}
                 <h6 class="heading-small text-muted mb-4">User information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">신청부문</label>
-                          <input type="radio" name="app_type" checked="" value="g">일반   
-                          <input type="radio" name="app_type" value="t" >번역
+                        {% if app.app_type == 'g' %}
+                          <input type="radio" name="app_type" checked="true" value="g" disabled>일반   
+                          <input type="radio" name="app_type" value="g" disabled>번역
+                        {% else %}
+                          <input type="radio" name="app_type" value="g" disabled>일반   
+                          <input type="radio" name="app_type" checked="true" value="g" disabled>번역
+                        {% endif %}
+
                       </div>
                     </div>
                     <div class="col-lg-6">
@@ -129,6 +135,18 @@
                         <img class="img-fluid" width="700" height="700" src="{% static pub_img %}" >
 
                       </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" name="biz_no" for="input-username" >사업자등록증</label>
+                        <input type="file" name="biz_file" accept="image/*">
+                    </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label class="form-control-label" for="input-email">출판사신고필증</label>
+                       <input type="file" name="pub_file" accept="image/*" >
+                    </div>
+                  </div>
                     </div>
                   </div>
                 </div>
@@ -152,7 +170,21 @@
                     <label>출판사 및 대표소개</label>
                     <textarea name="publisher_detail" rows="4" class="form-control form-control-alternative" >{{app.publisher_detail}}</textarea>
                   </div>
+                    <div class="pl-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" name="thumb_file" for="thumb_file" >표지이미지</label>
+                        <input type="file" name="thumb_file" accept="image/*">
+                    </div>
+                    </div>
+                    <div class="pl-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" name="biz_no" for="input-username" >상세이미지</label>
+                        <input type="file" name="detail_file" accept="image/*">
+                      </div>
+                    </div>
                   <div clas="form-group">
+                    <img class="img-fluid" width="700" height="700" src="{% static thumb_img %}" >
+                    <img class="img-fluid" width="700" height="700" src="{% static detail_img %}" >
                     <div class="pl-lg-4"></div>
                       <a href="javascript:document:application.submit();" class="btn btn-sm btn-primary">수정하기</a>
                     </div>
