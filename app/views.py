@@ -29,7 +29,14 @@ def app_detail(request,aid) :
     biz_img = f'images/a{aid}/img_0.jpg'
     pub_img = f'images/a{aid}/img_1.jpg'
 
-    context = { 'app' : app, "biz_img" : biz_img, "pub_img" : pub_img }    
+    thumb_img = f'images/a{aid}/img_2.jpg'
+    detail_img = f'images/a{aid}/img_3.jpg'
+
+    context = { 'app' : app, "biz_img" : biz_img, "pub_img" : pub_img, "thumb_img" : thumb_img, "detail_img": detail_img }    
+
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
+
     html_template = loader.get_template('appdetail.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -244,4 +251,16 @@ def update_application(request,aid) :
 
     app.save()
     return redirect(reverse(f'app_list'))
+
+@login_required(login_url="/login/")
+def confirm(request,aid) :
+    
+    app = Application.objects.get(aid=aid)
+    app.accepted_yn = "Y"
+    app.save()
+     
+    return redirect(reverse('app_list'))
+
+
+
 

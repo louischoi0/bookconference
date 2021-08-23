@@ -77,6 +77,8 @@ class Application(models.Model):
     
     author_name = C(max_length=200)
     publisher_name = C(max_length=200)
+
+    accepted_yn = C(max_length=100,default="N")
     
     published_date = C(max_length=200)
     price = I() 

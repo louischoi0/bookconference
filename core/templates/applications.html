@@ -29,7 +29,7 @@
                     <th scope="col"></th>
                     <th scope="col">접수번호</th>
                     <th scope="col">등록일시</th>
-                    <th scope="col"></th>
+                    <th scope="col">접수상태</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -60,16 +60,12 @@
                       </div>
                     </td>
                     <td>{{app.created_at}} </td>
-                    <td class="text-right">
-                      <div class="dropdown">
-                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
+                    <td >
+                      <div class="d-flex align-items-center">
+                        {% if app.accepted_yn == 'Y' %}
+                            <a href="/submit" class="btn btn-smbtn-primary" >접수완료</a>
+                        {% endif %}
+
                       </div>
                     </td>
                   </tr>

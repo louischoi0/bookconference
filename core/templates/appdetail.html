@@ -24,6 +24,9 @@
                   <h3 class="mb-0">롯데출판어쩌구</h3>
                 </div>
                 <div class="col-4 text-right">
+                    {% if is_admin %}
+                  <a href="/confirm/{{app.aid}}/" class="btn btn-sm btn-primary">접수완료</a>
+                  {% endif %}
                   <a href="javascript:document.application.submit();" class="btn btn-sm btn-primary">수정하기</a>
                 </div>
               </div>
@@ -36,8 +39,8 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">신청부문</label>
-                          <input type="radio" name="app_type" checked="" value="gen">일반   
-                          <input type="radio" name="app_type" value="trans" >개인  
+                          <input type="radio" name="app_type" checked="" value="g">일반   
+                          <input type="radio" name="app_type" value="t" >번역
                       </div>
                     </div>
                     <div class="col-lg-6">

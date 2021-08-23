@@ -23,6 +23,7 @@ urlpatterns = [
     path('update/<int:aid>/',views.update_application, name="app_update"),
 
     path('appdetail/<int:aid>/',views.app_detail, name="app_detail"),
+    path('confirm/<int:aid>/',views.confirm, name="confirm"),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
