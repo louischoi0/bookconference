@@ -57,6 +57,9 @@ def ulogin(request) :
 def applications(request) :
     context = {}
 
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
+
     if request.user.uid == ADMIN_USER:
         apps = Application.objects.all().order_by("-aid")
     else:
@@ -69,12 +72,16 @@ def applications(request) :
 def joinpage(request) :
     html_template = loader.get_template( 'join.html' )
     context = {}
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
     return HttpResponse(html_template.render(context, request))
 
 def page_noti(request,postnum):
     noti = Notification.objects.get(pk=postnum)
     html_template = loader.get_template( 'notipage.html' )
     context = { "noti" : noti }
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
@@ -104,6 +111,9 @@ def post_noti(request) :
 
     n =  Notification(title=n.cleaned_data["title"], content=n.cleaned_data["content"])
     n.save()
+    context = {}
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
     return redirect(reverse('list_noti'))
 
 def join(request) :
@@ -169,6 +179,8 @@ def index(request):
     
     context = {}
     context['segment'] = 'index'
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
 
     html_template = loader.get_template( 'index.html' )
     return HttpResponse(html_template.render(context, request))
@@ -176,6 +188,8 @@ def index(request):
 @login_required(login_url="/login/")
 def app_submit(request) :
     context = {}
+    if request.user.uid == ADMIN_USER :
+        context["is_admin"] = True
     html_template = loader.get_template( 'submit.html' )
     return HttpResponse(html_template.render(context, request))
 
