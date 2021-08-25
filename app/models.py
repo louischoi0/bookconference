@@ -41,7 +41,7 @@ class Applicant(AbstractBaseUser,PermissionsMixin) :
     email = models.CharField(max_length=200,unique=True)
     uid = models.CharField(max_length=200,unique=True)
     name = models.CharField(max_length=200)
-
+    
     password = models.CharField(max_length=200,default="")
 
     applicant_type = models.CharField(max_length=100)
@@ -82,6 +82,9 @@ class Application(models.Model):
     
     published_date = C(max_length=200,default="")
     price = I(default=0) 
+
+    inquiries = C(max_length=300,default="")
+    inquiries_info = C(max_length=300,default="")
     
     book_width = I(default=0)
     book_height = I(default=0)
@@ -102,7 +105,7 @@ class Application(models.Model):
 class Notification(models.Model) :
     nid = A(primary_key=True)
     title = C(max_length=300)
-    content = C(max_length=2000)
+    content = C(max_length=5000)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
