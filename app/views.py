@@ -78,6 +78,16 @@ def page_noti(request,postnum):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
+def list_user(request) :
+    users = Applicant.objects.all()    
+    is_admin = request.user.uid == 'admin'
+
+    context = { "users" : users , "is_admin" : is_admin }
+
+    html_template = loader.get_template( 'users.html' )
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
     context = {
@@ -203,6 +213,8 @@ def handle_uploaded_file(f,aid,index):
 
     destination.close()
     return file_name
+
+
 
 
 @login_required(login_url="/login/")

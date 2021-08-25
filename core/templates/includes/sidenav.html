@@ -114,6 +114,13 @@
               <i class="ni ni-user-run text-red"></i> 로그아웃
             </a>
           </li>
+          {% if is_admin %}
+          <li class="nav-item">
+            <a class="nav-link" href="/users" >
+              <i class="ni ni-circle-08 text-red"></i> 유저관리
+            </a>
+          </li>
+          {% endif %}
         </ul>
 
         </ul>
