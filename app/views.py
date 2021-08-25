@@ -125,6 +125,11 @@ def join(request) :
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context, request))
 
+    if not "name" in form_data :
+        context["no_name"] = "(이름 정보를 입력해 주세요.)"
+        html_template = loader.get_template( 'join.html' )
+        return HttpResponse(html_template.render(context, request))
+
     if (not "password" in form_data) or (not "password_check" in form_data):
         context["not_eq"] = "(비밀번호를 입력해 주세요.)"
         html_template = loader.get_template( 'join.html' )
