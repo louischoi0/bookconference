@@ -4,7 +4,7 @@ from django.forms import IntegerField as I
 
 class NotificationForm(forms.Form):
     title = C(max_length=300)
-    content = C(max_length=2000)
+    content = C(max_length=7000)
 
 class ApplicantForm(forms.Form):
     uid = forms.CharField(label='uid', max_length=200,required=True)
