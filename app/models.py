@@ -105,7 +105,7 @@ class Application(models.Model):
 class Notification(models.Model) :
     nid = A(primary_key=True)
     title = C(max_length=300)
-    content = C(max_length=5000)
+    content = C(max_length=7000)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
