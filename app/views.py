@@ -72,8 +72,6 @@ def applications(request) :
 def joinpage(request) :
     html_template = loader.get_template( 'join.html' )
     context = {}
-    if request.user.uid == ADMIN_USER :
-        context["is_admin"] = True
     return HttpResponse(html_template.render(context, request))
 
 def page_noti(request,postnum):
