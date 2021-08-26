@@ -1,0 +1,92 @@
+{% extends 'layouts/base2.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+      <div class="container-fluid">
+      </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <h3 class="mb-0">공지사항</h3>
+            </div>
+            <div class="table-responsive">
+              <a href="/notify.html" class="btn btn-smbtn-primary" >글등록</a>
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col"></th>
+                    <th scope="col">등록일시</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for noti in notis %}
+                  <tr onClick="location.href='/postp/{{noti.nid}}/'">
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <a href="#" class="avatar rounded-circle mr-3">
+                          <img alt="Image placeholder" src="/static/assets/img/theme/bootstrap.jpg">
+                        </a>
+                        <div class="media-body">
+                            <span class="mb-0 text-sm">{{ noti.title }}</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td>
+                        관리자
+                    </td>
+                    <td>
+                      <span class="badge badge-dot mr-4">
+                      </span>
+                    </td>
+                    <td>{{noti.created_at}}</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div>
+                          {% if is_admin %}
+                            <a href="/noti_delete/{{noti.nid}}/" class="btn btn-sm btn-primary">삭제</a>
+                          {% else %}
+                            here
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                          <a class="dropdown-item" href="#">Action</a>
+                          <a class="dropdown-item" href="#">Another action</a>
+                          <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Dark table -->
+      {% include "includes/footer.html" %}
+    </div>
+
+{% endblock content %}
+
