@@ -92,6 +92,16 @@ def list_user(request) :
     html_template = loader.get_template( 'users.html' )
     return HttpResponse(html_template.render(context, request))
 
+def list_noti_temp(request) :
+    notis = Notification.objects.all().order_by("-created_at")
+    context = {
+            "notis" : notis,
+            "is_admin" : request.user.uid == 'admin',
+    }
+
+    html_template = loader.get_template( 'temp.html' )
+    return HttpResponse(html_template.render(context, request))
+
 @login_required(login_url="/login/")
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
