@@ -18,6 +18,26 @@
           <div class="card shadow">
             <div class="card-header border-0">
               <h3 class="mb-0">내공모</h3>
+              <div>
+
+              <div class="row">
+                        <div class="form-group">
+                          <a class=" btn btn-smbtn-primary" id="aapp" href='applications?atype=all'>전체</a>
+                          <a class=" btn btn-smbtn-primary" id="gapp" href='applications?atype=g' >일반</a>
+                          <a class=" btn btn-smbtn-primary" id="tapp" href='applications?atype=t' >번역</a>
+                      </div>
+                </div>
+              {% if is_admin %}
+              <div class="row">
+                <select id="qtype-select">
+                  <option value="book_title">책제목</option>
+                  <option value="author_name">저자명</option>
+                </select>
+                  <input type="text" id='input_query' />
+                  <a class=" btn btn-smbtn-navy" id="btn_search" onclick="this.href='applications?atype=all&qtype=' + document.getElementById('qtype-select').value + '&query='+document.getElementById('input_query').value" >검색</a>
+                </div>
+              {% endif %}
+              </div>
             </div>
             <div class="table-responsive">
               <a href="/submit" class="btn btn-smbtn-primary" >공모참여</a>
@@ -105,6 +125,41 @@
       {% include "includes/footer.html" %}
     </div>
 
+<script>
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  const atype = getParameterByName('atype');
+  const qtype = getParameterByName('qtype');
+  const query = getParameterByName('query');
+
+  if (qtype) {
+    document.getElementById('qtype-select').value = qtype;
+  }
+
+  document.getElementById('btn_search').style.backgroundColor = 'skyblue';
+
+  if (atype && atype != 'all') {
+    if (atype == 'g') {
+      document.getElementById("gapp").style.backgroundColor = "skyblue";
+    }
+    else {
+      document.getElementById("tapp").style.backgroundColor = "skyblue";
+    }
+  }
+  else {
+    document.getElementById("aapp").style.backgroundColor = "skyblue";
+  }
+
+  if (query) {
+    document.getElementById('input_query').value = query;
+  }
+
+</script>
 {% endblock content %}
 
 <!-- Specific JS goes HERE --> 

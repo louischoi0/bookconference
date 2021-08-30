@@ -56,6 +56,8 @@ def ulogin(request) :
 @login_required(login_url="/login/")
 def applications(request) :
     context = {}
+    atype = request.GET['atype'] if 'atype' in request.GET else 'all'
+    query_string = None if not 'query' in request.GET else request.GET['query']
 
     if request.user.uid == ADMIN_USER :
         context["is_admin"] = True
@@ -64,6 +66,22 @@ def applications(request) :
         apps = Application.objects.all().order_by("-aid")
     else:
         apps = Application.objects.filter(app_user=request.user).order_by("-aid")
+    
+    if atype is not None and atype != "all":
+        apps = apps.filter(app_type=atype)
+
+    if query_string is not None :
+        _apps = []
+        qtype = request.GET['qtype']
+
+        for app in apps :
+            target = getattr(app, qtype)
+
+            if query_string in target :
+                _apps.append(app)
+
+        apps = _apps
+
     context["apps"] = apps
 
     html_template = loader.get_template('applications.html')
@@ -255,28 +273,30 @@ def post_submit(request) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "app_type",
-    "isbn",
-    "book_title",
-    "author_name",
-    "publisher_name",
-    "published_date", 
-    "price", 
-    "book_width",
-    "book_height",
-    "book_page_cnt",
-    "book_sales_cnt",
-    "book_detail",
-    "author_detail",
-    "publisher_detail" ] 
-
-    print(request.POST)
+    columns = {
+    "app_type" : '신청부문',
+    "isbn" : "ISBN",
+    "book_title" : "도서명",
+    "author_name" : "작가명",
+    "publisher_name" : "발행처,대표자",
+    "published_date" : "초판 1쇄 발행일", 
+    "price" : "가격", 
+    "book_width" : "가로",
+    "book_height": "세로",
+    "book_page_cnt" : "페이지",
+    "book_sales_cnt" : "판매부수",
+    "book_detail" : "도서특징",
+    "author_detail" : "작가소개",
+    "publisher_detail"  : "출판사 및 대표소개"
+    }
 
     for c in columns :
 
         if request.POST[c] == "" :
-            context = { "noti_msg" : f"{c} 필드를 입력해 주세요." }
+            context = { "noti_msg" : f"{columns[c]} 항목을 입력해 주세요." }
             html_template = loader.get_template('submit.html')
+            cached = { x : request.POST[x] for x in columns }
+            context['cached'] = cached
             return HttpResponse(html_template.render(context, request))
 
     kw = { x : request.POST[x] if request.POST[x] else "0" for x in columns } 
