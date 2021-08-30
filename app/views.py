@@ -78,8 +78,12 @@ def page_noti(request,postnum):
     noti = Notification.objects.get(pk=postnum)
     html_template = loader.get_template( 'notipage.html' )
     context = { "noti" : noti }
-    if request.user.uid == ADMIN_USER :
-        context["is_admin"] = True
+    try :
+        if request.user.uid == ADMIN_USER :
+            context["is_admin"] = True
+    except :
+            context["is_admin"] = False
+
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
