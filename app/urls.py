@@ -18,6 +18,8 @@ urlpatterns = [
     path('ulogin', views.ulogin, name="ulogin"),
     path('submit', views.app_submit, name="app_submit"),
 
+    path('export', views.export, name="export"),
+
     path('applications', views.applications, name="app_list"), #내공모
     path('users',views.list_user,name='list_user'),
 

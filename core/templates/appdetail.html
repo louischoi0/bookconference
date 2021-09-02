@@ -63,16 +63,22 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">저자명</label>
                         <input type="text" name="author_name" class="form-control form-control-alternative" value="{{ app.author_name }}">
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
                         <label name = "publisher_name" class="form-control-label" for="input-email">출판사명(대표명)</label>
                         <input name="publisher_name" class="form-control form-control-alternative" value="{{ app.publisher_name }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label name = "publisher_name" class="form-control-label" for="input-email">담당자명,연락처</label>
+                        <input type="email" name="inqueries_info" class="form-control form-control-alternative" value="{{ app.inquiries_info }}">
                       </div>
                     </div>
                   </div>
