@@ -21,7 +21,7 @@
               <h3 class="mb-0">공지사항</h3>
             </div>
             <div class="table-responsive">
-              {% is_admin %}
+              {% if is_admin %}
               <a href="/notify.html" class="btn btn-smbtn-primary" >글등록</a>
               {% endif %}
               <table class="table align-items-center table-flush">
