@@ -106,9 +106,11 @@
                       <span class="sr-only">Previous</span>
                     </a>
                   </li>
+                  {% for page in pages %}
                   <li class="page-item">
-                    <a class="page-link" href="#">1 <span class="sr-only">(current)</span></a>
+                    <a class="page-link" href="applications?{{request_context}}page={{page}}"> {{page}} <span class="sr-only">(current)</span></a>
                   </li>
+                  {% endfor %}
                   <li class="page-item">
                     <a class="page-link" href="#">
                       <i class="fas fa-angle-right"></i>
@@ -132,10 +134,15 @@
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
+  
 
   const atype = getParameterByName('atype');
   const qtype = getParameterByName('qtype');
   const query = getParameterByName('query');
+
+  function pagination(page) {
+
+  }
 
   if (qtype) {
     document.getElementById('qtype-select').value = qtype;

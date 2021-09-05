@@ -4,6 +4,9 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import csv
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -58,7 +61,21 @@ def ulogin(request) :
 def applications(request) :
     context = {}
     atype = request.GET['atype'] if 'atype' in request.GET else 'all'
+    page = request.GET['page'] if 'page' in request.GET else 1
+    page = int(page)
+
+    bulk_cnt = 4
+
     query_string = None if not 'query' in request.GET else request.GET['query']
+
+    request_context = ""
+    if 'atype' in request.GET :
+        request_context += f"atype={atype}"
+
+    if 'query' in request.GET :
+        request_context += f"query={query_string}"
+    
+    request_context += "&"
 
     if request.user.uid == ADMIN_USER :
         context["is_admin"] = True
@@ -70,6 +87,9 @@ def applications(request) :
     
     if atype is not None and atype != "all":
         apps = apps.filter(app_type=atype)
+    
+    page_cnt = int(len(apps) / bulk_cnt) + 1
+    apps = apps[(page-1)*bulk_cnt:page*bulk_cnt]
 
     if query_string is not None :
         _apps = []
@@ -85,6 +105,8 @@ def applications(request) :
         apps = _apps
 
     context["apps"] = apps
+    context["pages"] = list(x + 1 for x in range(page_cnt) )
+    context["request_context"] = request_context
 
     html_template = loader.get_template('applications.html')
     return HttpResponse(html_template.render(context, request))
@@ -384,23 +406,40 @@ def delete_noti(request,nid) :
     return redirect(reverse('list_noti'))
 
 def export(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="applications.csv"; encoding=utf-8'
+    workbook = Workbook()
+    ws = workbook.active
 
-    writer = csv.writer(response)
-    columns = [ 
-        "app_user", "app_type",
-        "isbn", "book_title", "author_name", "publisher_name",
-        "accepted_yn", "published_date", "price",
-        "inquiries", "inquiries_info", "book_width", "book_height",
-        "book_page_cnt", "book_sales_cnt", "book_detail", "author_detail",
-        "publisher_detail", "biz_no", "biz_document", "created_at"]
+    columns = {
+    "isbn" : "ISBN",
+    "book_title" : "도서명",
+    "author_name" : "작가명",
+    "publisher_name" : "발행처,대표자",
+    "inquiries_info" : "담당자명,연락처",
+    "published_date" : "초판 1쇄 발행일", 
+    "price" : "가격", 
+    "book_width" : "가로",
+    "book_height": "세로",
+    "book_page_cnt" : "페이지",
+    "book_sales_cnt" : "판매부수",
+    "book_detail" : "도서특징",
+    "author_detail" : "작가소개",
+    "publisher_detail"  : "출판사 및 대표소개",
+    }
 
-    writer.writerow(columns)
+    # ... worksheet.append(...) all of your data ...
+    if request.user.uid == ADMIN_USER :
+        apps = Application.objects.all()
+    else :
+        apps = Application.objects.filter(app_user=request.user)
 
-    users = Application.objects.all().values_list(*columns)
+    for cidx,c in enumerate(columns) :
+        ws.cell(1,cidx+1,columns[c])
 
-    for user in users:
-        writer.writerow(user)
+    for ridx,app in enumerate(apps) :
+        for cidx,c in enumerate(columns) :
+            v = getattr(app,c)
+            ws.cell(ridx+2, cidx+1,v)
 
+    response = HttpResponse(content=save_virtual_workbook(workbook), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=지원내역.xlsx'
     return response
