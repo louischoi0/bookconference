@@ -64,7 +64,7 @@ def applications(request) :
     page = request.GET['page'] if 'page' in request.GET else 1
     page = int(page)
 
-    bulk_cnt = 4
+    bulk_cnt = 15
 
     query_string = None if not 'query' in request.GET else request.GET['query']
 
