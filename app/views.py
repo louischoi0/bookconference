@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import csv
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -164,31 +165,37 @@ def join(request) :
     
     if not "uid" in form_data:
         context["no_uid"] = "(아이디를 입력해 주세요.)"
+        context['error_msg'] = context['no_uid'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context, request))
 
     if not "name" in form_data :
         context["no_name"] = "(이름 정보를 입력해 주세요.)"
+        context['error_msg'] = context['no_name'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context, request))
 
     if (not "password" in form_data) or (not "password_check" in form_data):
         context["not_eq"] = "(비밀번호를 입력해 주세요.)"
+        context['error_msg'] = context['not_eq'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context, request))
 
     if not "contact" in form_data:
         context["no_contact"] = "(연락처를 입력해 주세요.)"
+        context['error_msg'] = context['no_contact'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context, request))
 
     if not "email" in form_data:
         context["no_email"] = "(이메일을 입력해 주세요.)"
+        context['error_msg'] = context['no_email'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context,request))
 
     if form_data["password"] != form_data["password_check"]:
         context["not_eq"] = "(비밀번호가 동일하지 않습니다.)"
+        context['error_msg'] = context['not_eq'].replace(")","").replace("(","")
         html_template = loader.get_template( 'join.html' )
         return HttpResponse(html_template.render(context,request))
     
@@ -282,6 +289,7 @@ def post_submit(request) :
     "book_title" : "도서명",
     "author_name" : "작가명",
     "publisher_name" : "발행처,대표자",
+    "inquiries_info" : "담당자명,연락처",
     "published_date" : "초판 1쇄 발행일", 
     "price" : "가격", 
     "book_width" : "가로",
@@ -290,7 +298,7 @@ def post_submit(request) :
     "book_sales_cnt" : "판매부수",
     "book_detail" : "도서특징",
     "author_detail" : "작가소개",
-    "publisher_detail"  : "출판사 및 대표소개"
+    "publisher_detail"  : "출판사 및 대표소개",
     }
 
     for c in columns :
@@ -302,7 +310,7 @@ def post_submit(request) :
             context['cached'] = cached
             return HttpResponse(html_template.render(context, request))
 
-    kw = { x : request.POST[x] if request.POST[x] else "0" for x in columns } 
+    kw = { x : request.POST[x] if request.POST[x] else "" for x in columns } 
 
     tnum = Application.objects.filter(app_type=kw['app_type']).aggregate(Count('aid'))
     c = tnum['aid__count'] + 1
@@ -376,3 +384,25 @@ def delete_noti(request,nid) :
     noti.delete()
 
     return redirect(reverse('list_noti'))
+
+def export(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="applications.csv"; encoding=utf-8'
+
+    writer = csv.writer(response)
+    columns = [ 
+        "app_user", "app_type",
+        "isbn", "book_title", "author_name", "publisher_name",
+        "accepted_yn", "published_date", "price",
+        "inquiries", "inquiries_info", "book_width", "book_height",
+        "book_page_cnt", "book_sales_cnt", "book_detail", "author_detail",
+        "publisher_detail", "biz_no", "biz_document", "created_at"]
+
+    writer.writerow(columns)
+
+    users = Application.objects.all().values_list(*columns)
+
+    for user in users:
+        writer.writerow(user)
+
+    return response

@@ -5,10 +5,9 @@
 {% block content %}
 
     <!-- Header -->
-    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" 
-         style="min-height: 100px; background-image: url(/static/assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
+    <div class="header pb-5 pt-5 pt-lg-8" 
+         style="min-height: 100px; background-image: url(/static/assets/img/banner.jpg); background-size: cover; background-position: center top;">
       <!-- Mask -->
-      <span class="mask bg-gradient-default opacity-8"></span>
       <!-- Header container -->
     </div>
 
@@ -20,7 +19,7 @@
             <div class="card-header bg-white border-0">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h3 class="mb-0">롯데출판어쩌구</h3>
+                  <h3 class="mb-0">제4회 롯데출판문화대상</h3>
                 </div>
                 <div class="col-4 text-right">
                   <a href="javascript:document.application.submit();" class="btn btn-sm btn-primary">제출하기</a>
@@ -29,7 +28,7 @@
             </div>
             <div class="card-body">
               <form name="application" enctype="multipart/form-data"  method="post" action="apply" >{% csrf_token %}
-                <h6 class="heading-small text-muted mb-4">{{ noti_msg }}</h6>
+                <h2 style="color:crimson">{{ noti_msg }}</h2>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
@@ -53,23 +52,29 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">저자명</label>
                         <input type="text" name="author_name" class="form-control form-control-alternative" placeholder="Username" value="{{ cached.author_name }}">
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label name = "publisher_name" class="form-control-label" for="input-email">발행처,대표자</label>
+                        <label name = "publisher_name" class="form-control-label" for="input-email">발행처,대표자명</label>
                         <input type="email" name="publisher_name" class="form-control form-control-alternative" value="{{ cached.publisher_name }}">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label name = "inquiries_info" class="form-control-label" for="input-email">담당자명,연락처</label>
+                        <input type="email" name="inquiries_info" class="form-control form-control-alternative" value="{{ cached.inquiries_info }}">
                       </div>
                     </div>
                   </div>
                 </div>
                 <hr class="my-4" />
                 <!-- Address -->
-                <h6 class="heading-small text-muted mb-4">Contact information</h6>
+                <h6 class="heading-small text-muted mb-4">숫자만 입력해주세요.</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-4">
@@ -166,7 +171,6 @@
             </div>
           </div>
         </div>
-      </div>
 
       {% include "includes/footer.html" %}
 

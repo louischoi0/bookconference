@@ -22,8 +22,13 @@
               </div>
             </div>
             <div class="card-body">
+              <div>
+                공모전 회원가입 안내문구 
+롯데출판문화대상 공모전 참여를 위한 간편회원가입 페이지입니다.
+비밀번호가 암호화 되지 않으므로 쉽게 노출되지 않는 개인식별 가능한 숫자 6자리를 이용하여 가입완료 바랍니다.
+              </div>
                 <form name="applicant" method="post" action="create" >{% csrf_token %}
-                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <h2 style="color:crimson">{{ error_msg }}</h2>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
@@ -44,14 +49,14 @@
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                          <label class="form-control-label" for="input-username">비밀번호 {{not_eq}}</label>
-                        <input type="text" name="password" class="form-control form-control-alternative" value="">
+                          <label class="form-control-label" for="input-username">비밀번호(숫자만입력) {{not_eq}}</label>
+                        <input type="text" name="password" class="form-control form-control-alternative" value="" onkeypress="onlyNumber();">
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">비밀번호 확인</label>
-                        <input type="text" name="password_check" class="form-control form-control-alternative" value="">
+                        <input type="text" name="password_check" class="form-control form-control-alternative" onkeypress="onlyNumber();">
                       </div>
                     </div>
                   </div>
@@ -76,20 +81,61 @@
                     <div class="form-group">
                       <label class="form-control-label" for="input-username">지원자 구분</label>
                       <div class="col-lg-6">
-                          <input type="radio" name="applicant_type" value='a' checked="">저작자
-                          <input type="radio" name="applicant_type" value='p'>출판사
+                          <div class="row">
+                            <input type="radio" name="applicant_type" value='a' checked="">
+                            <label >공모전 참여도서의 원저작자(번역자)입니다. </label>
+                          </div>
+                          <div class="row">
+                            <input type="radio" name="applicant_type" value='p'>
+                            <label >저작자[번역자]와 협의를 거쳐 출판사 대표가 응모 함.</label>
+                          </div>
                       </div>
+                            <label >※ 협의되지 않았거나 분쟁이 발생 할 경우 모든 책임은 출판사 대표에게 있음을 확인합니다.</label>
                     </div>
                   </div>
                 </div>
                 <div class="row">
+                  <div class="col-lg-10">
+                    <div class="form-group">
+                      <textarea style="width: 100%;" rows="20" class="form-control form-control-alternative" >
+개인정보보호법 제15조 법규에 의거하여 롯데재단은 제4회 롯데출판문화대상 공모 참여자에 대한 개인정보 수집 및 활용과 행사 수행기관의 제3자에 대한 개인정보 이용 및 활용 동의서를 받고 있습니다.
+다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다
+롯데재단에서는 원활한 개인정보 업무처리를 위하여 다음과 같이 개인정보 처리업무를 위탁하고 있습니다. 
+ -운영대행 : 한국전자출판학회   / -접수대행 : 한국출판협동조합
+
+제공된 개인정보의 이용을 거부하고자 할 때에는 개인정보 관리책임자를 통해 열람, 정정 혹은 삭제를 요구할 수 있습니다.
+(단, 개인정보 이용의 제한 시 공모전 접수처리가 불가합니다.)
+
+※ 제공된 개인정보는 아래 항목에 제한된 범위에서만 활용됩니다.
+
+개인정보수집 및 이용목적	
+
+【개인정보 수집 항목】
+
+  공모전 접수 관련 세부 정보
+ - 개  인 : 성명, 주소, 사업자번호, 전화번호, 이메일 등
+ - 업  체 : 업체명, 사업자번호, 주소, 전화번호, 업체현황 등
+ - 공모작 : 도서명, 저자명, 공모관련 제공정보  등 
+
+【개인정보 활용 및 제3자 이용의 목적】
+
+- 공모전 관련 일체 : 공모접수 및 공모심사 활용
+- 제3자 이용 목적 : 
+  1) 공모전 접수 및 요청자의 동의 상담 답변
+  2) 공모전 접수 현황 등의 안내
+
+기타 공모전 진행관련 협조
+                      </textarea>
+                    </div>
+                  </div>
+                </div>
+
+                 상기 내용을 확인하였으며, 확인 사항에  동의합니다.
+                 <a href="javascript:document.applicant.submit();" class="btn btn-sm btn-primary">가입</a>
+
+                <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-username">공모 참여 동의 여부</label>
-                      <div class="col-lg-6 row-lg-6">
-                          <input type="radio" name="agree_yn" checked="y">동의  
-                          <input type="radio" name="agree_yn">미동의  
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -102,6 +148,12 @@
       {% include "includes/footer.html" %}
 
     </div>
+    <script>
+    function onlyNumber(){
+        if((event.keyCode<48)||(event.keyCode>57))
+            event.returnValue=false;
+    }
+    </script>
 
 {% endblock content %}
 

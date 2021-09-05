@@ -27,9 +27,9 @@
                     <th scope="col">순번</th>
                     <th scope="col">ID</th>
                     <th scope="col">연락처</th>
-                    <th scope="col">Email</th>
+                    <th scope="col">이름</th>
                     <th scope="col">Password</th>
-                    <th scope="col">가입일시</th>
+                    <th scope="col">지원자구분</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -54,13 +54,17 @@
                     <td>
                       <div class="d-flex align-items-center">
                         <div>
-                            {{ user.email }}
+                            {{ user.name }}
                         </div>
                       </div>
                     </td>
                     <td>{{ user.password }} </td>
                     <td >
-                      {{ user.created_at }}
+                      {% if user.applicant_type == 'a' %}
+                      저작자
+                      {% elif user.applicant_type == 'p' %}
+                      대표자
+                      {% endif %}
                     </td>
                   </tr>
                   {% endfor %}
