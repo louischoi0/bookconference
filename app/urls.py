@@ -9,7 +9,7 @@ from app import views
 urlpatterns = [
     # The home page
     #path('', views.applications, name='home'),
-    path('', views.list_noti_temp, name='home'),
+    path('', views.list_noti, name='home'),
     path('create', views.join, name='join'),
     path('postn', views.post_noti, name='post_noti'),
     path('postl', views.list_noti, name='list_noti'),
