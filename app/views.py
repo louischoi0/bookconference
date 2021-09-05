@@ -76,8 +76,10 @@ def applications(request) :
 
         for app in apps :
             target = getattr(app, qtype)
+
             _query_string = query_string.replace(" ","") 
             _target = target.replace(" ","")
+
             if _query_string in _target :
                 _apps.append(app)
 
