@@ -410,8 +410,10 @@ def export(request):
     ws = workbook.active
 
     columns = {
-    "isbn" : "ISBN",
+    "app_token" : '접수번호',
+    "app_type" : '신청부문',
     "book_title" : "도서명",
+    "isbn" : "ISBN",
     "author_name" : "작가명",
     "publisher_name" : "발행처,대표자",
     "inquiries_info" : "담당자명,연락처",
@@ -438,6 +440,15 @@ def export(request):
     for ridx,app in enumerate(apps) :
         for cidx,c in enumerate(columns) :
             v = getattr(app,c)
+
+            if c == "app_type" :
+                if v == "g" :
+                    ws.cell(ridx+2, cidx+1,"일반")
+                else :
+                    ws.cell(ridx+2, cidx+1,"번역")
+
+                continue
+
             ws.cell(ridx+2, cidx+1,v)
 
     response = HttpResponse(content=save_virtual_workbook(workbook), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
