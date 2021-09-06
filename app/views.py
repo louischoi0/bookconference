@@ -57,7 +57,6 @@ def ulogin(request) :
         messages.error(request,"로그인 정보가 올바르지 않습니다.")
         return redirect('/login/')
 
-@login_required(login_url="/login/")
 def applications(request) :
     context = {}
     atype = request.GET['atype'] if 'atype' in request.GET else 'all'
