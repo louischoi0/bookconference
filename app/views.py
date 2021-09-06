@@ -88,9 +88,6 @@ def applications(request) :
     if atype is not None and atype != "all":
         apps = apps.filter(app_type=atype)
     
-    page_cnt = int(len(apps) / bulk_cnt) + 1
-    apps = apps[(page-1)*bulk_cnt:page*bulk_cnt]
-
     if query_string is not None :
         _apps = []
         qtype = request.GET['qtype']
@@ -103,6 +100,10 @@ def applications(request) :
                 _apps.append(app)
 
         apps = _apps
+
+    page_cnt = int(len(apps) / bulk_cnt) + 1
+    apps = apps[(page-1)*bulk_cnt:page*bulk_cnt]
+
 
     context["apps"] = apps
     context["pages"] = list(x + 1 for x in range(page_cnt) )
