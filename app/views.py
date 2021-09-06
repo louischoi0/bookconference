@@ -148,9 +148,14 @@ def list_noti_temp(request) :
 
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
+    try :
+        is_admin = request.user.uid == 'admin'
+    except :
+        is_admin = False 
+
     context = {
             "notis" : notis,
-            "is_admin" : request.user.uid == 'admin',
+            "is_admin" : is_admin
     }
 
     html_template = loader.get_template( 'notifications.html' )
