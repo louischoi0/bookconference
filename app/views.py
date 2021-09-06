@@ -57,6 +57,7 @@ def ulogin(request) :
         messages.error(request,"로그인 정보가 올바르지 않습니다.")
         return redirect('/login/')
 
+@login_required(login_url="/login/")
 def applications(request) :
     context = {}
     atype = request.GET['atype'] if 'atype' in request.GET else 'all'
@@ -144,9 +145,7 @@ def list_noti_temp(request) :
     }
 
     html_template = loader.get_template( 'temp.html' )
-    return HttpResponse(html_template.render(context, request))
 
-@login_required(login_url="/login/")
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
     context = {
