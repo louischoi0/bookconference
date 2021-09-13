@@ -366,7 +366,7 @@ def update_application(request,aid) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+    columns = [ "isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail", "inqueries_info" ] 
 
     kw = { x : request.POST[x] for x in columns } 
     app = Application.objects.get(aid=aid)
