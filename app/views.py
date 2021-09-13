@@ -25,6 +25,7 @@ from app.models import Applicant, Application, Application
 from app.models import Notification
 
 from django.db.models import Count
+import datetime
 
 ADMIN_USER = "admin" #kpc5616
 
@@ -40,7 +41,7 @@ def app_detail(request,aid) :
 
     if request.user.uid == ADMIN_USER :
         context["is_admin"] = True
-
+    
     html_template = loader.get_template('appdetail.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -103,7 +104,11 @@ def applications(request) :
 
     page_cnt = int(len(apps) / bulk_cnt) + 1
     apps = apps[(page-1)*bulk_cnt:page*bulk_cnt]
-
+    
+    for app in apps :
+        t = datetime.datetime(year=app.created_at.year,month=app.created_at.month,day=app.created_at.day, hour=app.created_at.hour,minute=app.created_at.minute) + datetime.timedelta(hours = 9)
+        t = t.strftime("%Y/%m/%d, %H:%M:%S") 
+        app.created_at = t 
 
     context["apps"] = apps
     context["pages"] = list(x + 1 for x in range(page_cnt) )
@@ -297,8 +302,6 @@ def handle_uploaded_file(f,aid,index):
     return file_name
 
 
-
-
 @login_required(login_url="/login/")
 def post_submit(request) :
     app_form = ApplicationForm(request.POST) 
@@ -366,7 +369,12 @@ def update_application(request,aid) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail", "inqueries_info" ] 
+    columns = [ 
+    "isbn","book_title","author_name",
+    "publisher_name","published_date", "price", 
+    "book_width","book_height","book_page_cnt",
+    "book_sales_cnt","book_detail","author_detail",
+    "publisher_detail", "inquiries_info" ]
 
     kw = { x : request.POST[x] for x in columns } 
     app = Application.objects.get(aid=aid)
@@ -375,8 +383,9 @@ def update_application(request,aid) :
         v = kw[k]
         setattr(app,k,v)
 
+
     app.save()
-    print(request.FILES)
+
     if 'biz_file'  in request.FILES:
         handle_uploaded_file(request.FILES['biz_file'],app.aid,0)
 
@@ -430,6 +439,7 @@ def export(request):
     "book_detail" : "도서특징",
     "author_detail" : "작가소개",
     "publisher_detail"  : "출판사 및 대표소개",
+    "accepted_yn" : "접수상태"
     }
 
     # ... worksheet.append(...) all of your data ...
