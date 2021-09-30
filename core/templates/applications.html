@@ -5,6 +5,7 @@
 {% block content %}
 
     <!-- Header -->
+
     <div class="header pb-4 pt-5 pt-md-8"
          style="min-height: 100px; background-image: url(/static/assets/img/banner.jpg); background-size: cover; background-position: center top;">
       <div class="container-fluid">
@@ -42,9 +43,7 @@
             </div>
             <div class="table-responsive">
               <a href="/submit" class="btn btn-smbtn-primary" >공모참여</a>
-              {% if is_admin %}
               <a href="/export" class="btn btn-smbtn-primary" >다운로드</a>
-              {% endif %}
               <table class="table align-items-center table-flush">
                 <thead class="thead-light">
                     <tr >
@@ -106,9 +105,11 @@
                       <span class="sr-only">Previous</span>
                     </a>
                   </li>
+                  {% for page in pages %}
                   <li class="page-item">
-                    <a class="page-link" href="#">1 <span class="sr-only">(current)</span></a>
+                    <a class="page-link" href="applications?{{request_context}}page={{page}}"> {{page}} <span class="sr-only">(current)</span></a>
                   </li>
+                  {% endfor %}
                   <li class="page-item">
                     <a class="page-link" href="#">
                       <i class="fas fa-angle-right"></i>
@@ -132,10 +133,15 @@
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
+  
 
   const atype = getParameterByName('atype');
   const qtype = getParameterByName('qtype');
   const query = getParameterByName('query');
+
+  function pagination(page) {
+
+  }
 
   if (qtype) {
     document.getElementById('qtype-select').value = qtype;

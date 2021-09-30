@@ -4,6 +4,9 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import csv
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -22,6 +25,7 @@ from app.models import Applicant, Application, Application
 from app.models import Notification
 
 from django.db.models import Count
+import datetime
 
 ADMIN_USER = "admin" #kpc5616
 
@@ -37,7 +41,7 @@ def app_detail(request,aid) :
 
     if request.user.uid == ADMIN_USER :
         context["is_admin"] = True
-
+    
     html_template = loader.get_template('appdetail.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -58,7 +62,21 @@ def ulogin(request) :
 def applications(request) :
     context = {}
     atype = request.GET['atype'] if 'atype' in request.GET else 'all'
+    page = request.GET['page'] if 'page' in request.GET else 1
+    page = int(page)
+
+    bulk_cnt = 15
+
     query_string = None if not 'query' in request.GET else request.GET['query']
+
+    request_context = ""
+    if 'atype' in request.GET :
+        request_context += f"atype={atype}"
+
+    if 'query' in request.GET :
+        request_context += f"query={query_string}"
+    
+    request_context += "&"
 
     if request.user.uid == ADMIN_USER :
         context["is_admin"] = True
@@ -70,7 +88,7 @@ def applications(request) :
     
     if atype is not None and atype != "all":
         apps = apps.filter(app_type=atype)
-
+    
     if query_string is not None :
         _apps = []
         qtype = request.GET['qtype']
@@ -86,7 +104,17 @@ def applications(request) :
 
         apps = _apps
 
+    page_cnt = int(len(apps) / bulk_cnt) + 1
+    apps = apps[(page-1)*bulk_cnt:page*bulk_cnt]
+    
+    for app in apps :
+        t = datetime.datetime(year=app.created_at.year,month=app.created_at.month,day=app.created_at.day, hour=app.created_at.hour,minute=app.created_at.minute) + datetime.timedelta(hours = 9)
+        t = t.strftime("%Y/%m/%d, %H:%M:%S") 
+        app.created_at = t 
+
     context["apps"] = apps
+    context["pages"] = list(x + 1 for x in range(page_cnt) )
+    context["request_context"] = request_context
 
     html_template = loader.get_template('applications.html')
     return HttpResponse(html_template.render(context, request))
@@ -125,14 +153,17 @@ def list_noti_temp(request) :
     }
 
     html_template = loader.get_template( 'temp.html' )
-    return HttpResponse(html_template.render(context, request))
 
-@login_required(login_url="/login/")
 def list_noti(request) :
     notis = Notification.objects.all().order_by("-created_at")
+    try :
+        is_admin = request.user.uid == 'admin'
+    except :
+        is_admin = False 
+
     context = {
             "notis" : notis,
-            "is_admin" : request.user.uid == 'admin',
+            "is_admin" : is_admin
     }
 
     html_template = loader.get_template( 'notifications.html' )
@@ -273,8 +304,6 @@ def handle_uploaded_file(f,aid,index):
     return file_name
 
 
-
-
 @login_required(login_url="/login/")
 def post_submit(request) :
     app_form = ApplicationForm(request.POST) 
@@ -342,7 +371,12 @@ def update_application(request,aid) :
     
     app_data = app_form.cleaned_data
 
-    columns = [ "isbn","book_title","author_name","publisher_name","published_date", "price", "book_width","book_height","book_page_cnt","book_sales_cnt","book_detail","author_detail","publisher_detail" ] 
+    columns = [ 
+    "isbn","book_title","author_name",
+    "publisher_name","published_date", "price", 
+    "book_width","book_height","book_page_cnt",
+    "book_sales_cnt","book_detail","author_detail",
+    "publisher_detail", "inquiries_info" ]
 
     kw = { x : request.POST[x] for x in columns } 
     app = Application.objects.get(aid=aid)
@@ -351,8 +385,9 @@ def update_application(request,aid) :
         v = kw[k]
         setattr(app,k,v)
 
+
     app.save()
-    print(request.FILES)
+
     if 'biz_file'  in request.FILES:
         handle_uploaded_file(request.FILES['biz_file'],app.aid,0)
 
@@ -386,23 +421,52 @@ def delete_noti(request,nid) :
     return redirect(reverse('list_noti'))
 
 def export(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="applications.csv"; encoding=utf-8'
+    workbook = Workbook()
+    ws = workbook.active
 
-    writer = csv.writer(response)
-    columns = [ 
-        "app_user", "app_type",
-        "isbn", "book_title", "author_name", "publisher_name",
-        "accepted_yn", "published_date", "price",
-        "inquiries", "inquiries_info", "book_width", "book_height",
-        "book_page_cnt", "book_sales_cnt", "book_detail", "author_detail",
-        "publisher_detail", "biz_no", "biz_document", "created_at"]
+    columns = {
+    "app_token" : '접수번호',
+    "app_type" : '신청부문',
+    "book_title" : "도서명",
+    "isbn" : "ISBN",
+    "author_name" : "작가명",
+    "publisher_name" : "발행처,대표자",
+    "inquiries_info" : "담당자명,연락처",
+    "published_date" : "초판 1쇄 발행일", 
+    "price" : "가격", 
+    "book_width" : "가로",
+    "book_height": "세로",
+    "book_page_cnt" : "페이지",
+    "book_sales_cnt" : "판매부수",
+    "book_detail" : "도서특징",
+    "author_detail" : "작가소개",
+    "publisher_detail"  : "출판사 및 대표소개",
+    "accepted_yn" : "접수상태"
+    }
 
-    writer.writerow(columns)
+    # ... worksheet.append(...) all of your data ...
+    if request.user.uid == ADMIN_USER :
+        apps = Application.objects.all()
+    else :
+        apps = Application.objects.filter(app_user=request.user)
 
-    users = Application.objects.all().values_list(*columns)
+    for cidx,c in enumerate(columns) :
+        ws.cell(1,cidx+1,columns[c])
 
-    for user in users:
-        writer.writerow(user)
+    for ridx,app in enumerate(apps) :
+        for cidx,c in enumerate(columns) :
+            v = getattr(app,c)
 
+            if c == "app_type" :
+                if v == "g" :
+                    ws.cell(ridx+2, cidx+1,"일반")
+                else :
+                    ws.cell(ridx+2, cidx+1,"번역")
+
+                continue
+
+            ws.cell(ridx+2, cidx+1,v)
+
+    response = HttpResponse(content=save_virtual_workbook(workbook), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=지원내역.xlsx'
     return response
